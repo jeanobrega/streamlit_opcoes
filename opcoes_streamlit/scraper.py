@@ -1,5 +1,6 @@
 # scraper.py
-from urllib.request import urlopen
+from urllib.request import Request,urlopen
+import json
 from urllib.error import URLError, HTTPError
 from bs4 import BeautifulSoup
 class ScraperModel:
@@ -23,3 +24,13 @@ class ScraperModel:
         except Exception as e:
             return f"Erro ao analisar o HTML: {e}"
 
+    def scrape_json(self,url):
+        try:
+            req=Request(url,headers={'User-Agent': 'Mozilla'})
+            with urlopen(req) as response:
+                data = response.read()
+                json_data = json.loads(data.decode('utf-8'))
+            return json_data
+        except Exception as e:
+            return f"Erro ao obter dados: {e}"
+        #return "scrape_json em construção! "
