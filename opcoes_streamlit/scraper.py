@@ -33,4 +33,12 @@ class ScraperModel:
             return json_data
         except Exception as e:
             return f"Erro ao obter dados: {e}"
-        #return "scrape_json em construção! "
+    
+    def scrape_advfn_hist(self,symbol,frequency,resolution):
+        try:
+            url="https://br.advfn.com/common/api/charts/GetHistory?symbol=BOV^"+symbol+"&frequency="+frequency+"&resolution="+resolution
+            data=self.scrape_json(url)
+            return data
+        except Exception as e:
+            return f"Erro ao obter dados: {e}"   
+        
