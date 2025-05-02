@@ -1,6 +1,7 @@
 # scraper.py
 from urllib.request import Request,urlopen
 import json
+import datetime
 from urllib.error import URLError, HTTPError
 from bs4 import BeautifulSoup
 class ScraperModel:
@@ -38,6 +39,8 @@ class ScraperModel:
         try:
             url="https://br.advfn.com/common/api/charts/GetHistory?symbol=BOV^"+symbol+"&frequency="+frequency+"&resolution="+resolution
             data=self.scrape_json(url)
+            if data["status"] == "fail":
+                raise Exception (f"{data["result"]}")
             return data
         except Exception as e:
             return f"Erro ao obter dados: {e}"   
