@@ -1,7 +1,8 @@
 # scraper.py
 from urllib.request import Request,urlopen
 import json
-import datetime
+from datetime import datetime as dt
+import pandas as pd
 from urllib.error import URLError, HTTPError
 from bs4 import BeautifulSoup
 class ScraperModel:
@@ -39,9 +40,17 @@ class ScraperModel:
         try:
             url="https://br.advfn.com/common/api/charts/GetHistory?symbol=BOV^"+symbol+"&frequency="+frequency+"&resolution="+resolution
             data=self.scrape_json(url)
-            if data["status"] == "fail":
+            status = data['status']
+            if status == "fail":
                 raise Exception (f"{data["result"]}")
-            return data
+            dates=data['result']['data']['t']
+            closes=data['result']['data']['c']
+            dates = [dt.fromtimestamp(d) for d in dates]
+            df = pd.DataFrame({'close':closes},index=dates)
+            df.index.name='date'
+            last = {'date':df.index[-1],'close':df['close'][-1]}
+            
+            return {'status':status,'data': df,'ultimo':last}
         except Exception as e:
-            return f"Erro ao obter dados: {e}"   
+            return {'status':status,'data':f"Erro ao obter dados: {e}"}  
         
